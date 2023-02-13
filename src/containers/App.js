@@ -4,6 +4,7 @@ import React, { Component } from 'react'
 import SearchBox from '../components/SearchBox'
 import './App.css'
 import Scroll from '../components/Scroll'
+import ErrorBoundary from '../components/ErrorBoundary.js'
 
 class App extends Component {
   // How to add state
@@ -30,15 +31,15 @@ class App extends Component {
   }
 
   render() {
+    // Destructoring
+    const { robots, searchfield } = this.state
     // created this variable so it can communicate with the CardList whatever we're doing with the searchfield
-    const filteredRobots = this.state.robots.filter(robot => {
+    const filteredRobots = robots.filter(robot => {
       // returns the robot's name and if it includes the searchfield
-      return robot.name
-        .toLowerCase()
-        .includes(this.state.searchfield.toLowerCase())
+      return robot.name.toLowerCase().includes(searchfield.toLowerCase())
     })
     // if there is a ton of users
-    if (!this.state.robots) {
+    if (!robots.length) {
       return <h1>Loading</h1>
     } else {
       return (
@@ -46,7 +47,9 @@ class App extends Component {
           <h1 className="f1">RoboFriends</h1>
           <SearchBox searchChange={this.onSearchChange} />
           <Scroll>
-            <CardList robots={filteredRobots} />
+            <ErrorBoundary>
+              <CardList robots={filteredRobots} />
+            </ErrorBoundary>
           </Scroll>
         </div>
       )
